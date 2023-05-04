@@ -1,16 +1,44 @@
 # flutter_otp_auth
 
-A new Flutter project.
+- [Youtube tutorial](https://www.youtube.com/watch?v=GoIREQjWiWk&t=3014s)
+- [Link to images](https://www.freepik.com/free-photos-vectors/login)
 
-## Getting Started
+# SHA-1 Generation for android Method 1 (NB: MOST RECOMMENDED WAY)
+1. Right click on 'gradlew' and go to 'Open in Terminal' This file is found under {{YOUR PROJECT}}/android/gradlew
+- OR while inside project directory, navigate to android directory i.e.
+```
+cd android
+```
+2. Type in the following command(on mac).
+```
+gradlew signingReport
+```
+- or If did not work first try second command(on windows):
+```
+./gradlew signingReport
+```
+- Inside project directory, run following command to clean and get:
+```
+flutter clean
+flutter pub get
+```
+- If facing any issues generating SHAH-1, comment on packages in pubspec.yml then pub get, afterwards uncomment
+- Add The SHA-1 to firebase project by pressing 'add fingerprint' in firebase
 
-This project is a starting point for a Flutter application.
+## Obtaining package name in iOS:
+- In iOS the package name is the bundle identifier in Info.plist. which is found in Runner.xcodeproj/project.pbxproj
+PRODUCT_BUNDLE_IDENTIFIER = com.example.flutterOtpAuth;
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- on M1 Mac, run following commands to install gem / cocoapods:
+```
+cd ios
+sudo arch -x86_64 gem install ffi
+or
+sudo arch -x86_64 pod install
+or
+sudo arch -x86_64 pod install --repo-update
+```
+- if above dont work, run :
+```
+brew install cocoapods
+```

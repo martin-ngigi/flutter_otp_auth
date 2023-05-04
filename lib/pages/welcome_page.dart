@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_otp_auth/pages/home_screen.dart';
 import 'package:flutter_otp_auth/pages/register_page.dart';
+import 'package:flutter_otp_auth/provider/auth_provider.dart';
 import 'package:flutter_otp_auth/widgets/custom_button.dart';
+import 'package:provider/provider.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       body: SafeArea(
           child: Center(
@@ -42,8 +46,17 @@ class WelcomePage extends StatelessWidget {
                     width: double.maxFinite,
                     height: 50,
                     child: CustomButton(
-                      onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterPage()));
+                      onPressed: () async{
+                        if(ap.isSignedIn){
+                          await ap.getDataFromSharedPreference().whenComplete((){
+                            /// if true, navigate to HomeScreen , else RegisterPage
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen(),),);
+                          });
+                        }
+                        else{
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterPage(),),);
+                        }
+
                       },
                       text: "Get started",
                     ),

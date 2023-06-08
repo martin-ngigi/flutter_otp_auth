@@ -42,3 +42,10 @@ sudo arch -x86_64 pod install --repo-update
 ```
 brew install cocoapods
 ```
+
+## Reducing flutter app size:
+- Run following commands:
+```
+flutter clean
+flutter build apk --target-platform android-arm,android-arm64
+```

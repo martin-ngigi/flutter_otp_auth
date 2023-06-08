@@ -9,6 +9,7 @@ import 'package:flutter_otp_auth/constants/app_constants.dart';
 import 'package:flutter_otp_auth/model/user_model.dart';
 import 'package:flutter_otp_auth/pages/otp_page.dart';
 import 'package:flutter_otp_auth/utils/utils.dart';
+import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class AuthProvider extends ChangeNotifier{
   bool _isSignedIn = false;
@@ -28,6 +29,8 @@ class AuthProvider extends ChangeNotifier{
 
   final FirebaseFirestore _firebaseFireStore =  FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage=  FirebaseStorage.instance;
+
+  // late TextEditingController pinController;
 
 
   AuthProvider(){
@@ -49,13 +52,14 @@ class AuthProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  void signInWithPhone(BuildContext context, String phoneNumber) async {
+  void signInWithPhone(BuildContext context, String phoneNumber,) async {
     try {
       await _firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         /// after OTP is completed
           verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
             await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+            // pinController.setText(phoneAuthCredential.smsCode!);
           },
           /// error
           verificationFailed: (error){
@@ -83,7 +87,8 @@ class AuthProvider extends ChangeNotifier{
     required BuildContext context,
     required String verificationId,
     required String userOtp,
-    required Function onSuccess
+    required Function onSuccess,
+    required TextEditingController pinController
   }) async{
     _isLoading = true;
     notifyListeners();
@@ -91,6 +96,10 @@ class AuthProvider extends ChangeNotifier{
     try{
       PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: userOtp);
       var signInUser = await _firebaseAuth.signInWithCredential(credential);
+      /// sms autofill
+      pinController.setText(credential.smsCode!);
+      notifyListeners();
+
       User? user = (signInUser).user!;
 
       if(user != null){

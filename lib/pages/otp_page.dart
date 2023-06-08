@@ -16,6 +16,8 @@ class OTPPage extends StatefulWidget {
 }
 
 class _OTPPageState extends State<OTPPage> {
+  TextEditingController pinController = TextEditingController();
+
   String? otpCode;
   @override
   Widget build(BuildContext context) {
@@ -94,6 +96,9 @@ class _OTPPageState extends State<OTPPage> {
                     onCompleted: (value){
                       otpCode = value;
                     },
+                    /// sms autofill
+                    androidSmsAutofillMethod: AndroidSmsAutofillMethod.none,
+                    controller: pinController,
                   ),
                   const SizedBox(height: 25,),
                   ///verify button
@@ -104,7 +109,7 @@ class _OTPPageState extends State<OTPPage> {
                         text: "Verify",
                         onPressed: (){
                           if(otpCode != null){
-                            verifyOTP(context, otpCode!);
+                            verifyOTP(context, otpCode!, pinController);
                           }
                           else{
                             print("-----> [OTPPage] Enter 6-digit code");
@@ -142,12 +147,13 @@ class _OTPPageState extends State<OTPPage> {
     );
   }
 
-  void verifyOTP(BuildContext context, String userOTP){
+  void verifyOTP(BuildContext context, String userOTP, TextEditingController pinController){
     final ap = Provider.of<AuthProvider>(context, listen: false);
     ap.verifyOtp(
         context: context,
         verificationId: widget.verificationId,
         userOtp: userOTP,
+        pinController: pinController,
         onSuccess: (){
           /// checking whether user exists in the db.
           ap.checkExistingUser().then((value) async{
